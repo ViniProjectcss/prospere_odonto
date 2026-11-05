@@ -1,0 +1,37 @@
+{
+  "_aviso": "Edite este arquivo com os dados reais da clínica. Campos marcados com [EDITAR] são placeholders.",
+  "name": "Prospere Odonto",
+  "tagline": "Sorrir é cuidar de você",
+  "instagram": { "handle": "prospere.odonto", "url": "https://www.instagram.com/prospere.odonto/" },
+  "whatsapp": { "number": "5500000000000", "message": "Olá! Vim pelo site e gostaria de agendar uma avaliação." },
+  "address": {
+    "line1": "[EDITAR] Rua / Avenida, número, sala",
+    "line2": "[EDITAR] Bairro — Cidade / UF",
+    "mapsUrl": ""
+  },
+  "hours": [
+    { "days": "Segunda a Sexta", "time": "[EDITAR] 08h às 18h" },
+    { "days": "Sábado", "time": "[EDITAR] 08h às 12h" }
+  ],
+  "about": {
+    "title": "Um espaço pensado para você sorrir sem medo.",
+    "text": "Na Prospere Odonto, cada detalhe do ambiente foi desenhado para acolher: luz natural, tons suaves e uma equipe dedicada a transformar sua consulta em uma experiência tranquila. [EDITAR com o texto oficial da clínica]"
+  },
+  "stats": [
+    { "value": "[EDITAR]", "label": "Pacientes atendidos" },
+    { "value": "[EDITAR]", "label": "Anos de experiência" },
+    { "value": "100%", "label": "Atendimento humanizado" }
+  ],
+  "services": [
+    { "title": "Avaliação e prevenção", "text": "Check-up completo, limpeza e orientação para manter a saúde bucal em dia." },
+    { "title": "Estética do sorriso", "text": "Clareamento, facetas e harmonização para um sorriso natural e confiante." },
+    { "title": "Ortodontia", "text": "Alinhadores e aparelhos para corrigir a posição dos dentes com conforto." },
+    { "title": "Implantes e reabilitação", "text": "Recupere função e estética com planejamento preciso e acompanhamento." },
+    { "title": "Clínica geral", "text": "Restaurações, tratamento de canal e cuidados para toda a família." }
+  ],
+  "differentials": [
+    { "title": "Ambiente acolhedor", "text": "Espaço claro, silencioso e com muito verde para reduzir a ansiedade." },
+    { "title": "Atendimento individual", "text": "Cada plano de tratamento é desenhado de acordo com o seu objetivo." },
+    { "title": "Tecnologia e biossegurança", "text": "Protocolos rigorosos e equipamentos modernos em todas as etapas." }
+  ]
+}

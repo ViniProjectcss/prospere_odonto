@@ -1,0 +1,9 @@
+{
+  "frames": 390,
+  "width": 1920,
+  "height": 1080,
+  "pattern": "/frames/{n}.webp",
+  "digits": 4,
+  "fps": 24,
+  "generatedAt": "2026-11-04T16:12:42.862Z"
+}
