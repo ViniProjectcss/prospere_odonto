@@ -144,7 +144,7 @@ onScroll() {
     }
     this.progressEl.style.transform = `scaleX(${this.current.toFixed(4)})`;
     this.updateChapters(this.current);
-    this.hintEl.classList.toggle('is-hidden', this.current > 0.02);
+    
     requestAnimationFrame(this.tick);
   }
 }
