@@ -14,6 +14,7 @@ const SESSION_MS = 8 * 60 * 60 * 1000; // 8 horas
 const MAX_FAILS = 5;
 const LOCK_MS = 15 * 60 * 1000; // 15 minutos
 
+
 /* ---------- configuração ---------- */
 function configProblem() {
   const missing = ['ADMIN_USER', 'ADMIN_PASSWORD', 'SESSION_SECRET'].filter((k) => !process.env[k]);
