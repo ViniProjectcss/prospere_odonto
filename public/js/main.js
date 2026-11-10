@@ -4,33 +4,6 @@ import { Scrub } from './scrub.js';
 const $ = (s, r = document) => r.querySelector(s);
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ---------- Conteúdo da clínica (vem de /api/clinic) ---------- */
-function esc(s = '') {
-  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
-
-function renderClinic(c) {
-  $('#aboutTitle').textContent = c.about.title;
-  $('#aboutText').textContent = c.about.text;
-  $('#stats').innerHTML = c.stats.map((s) => `<div><dt>${esc(s.value)}</dt><dd>${esc(s.label)}</dd></div>`).join('');
-  $('#services').innerHTML = c.services.map((s) => `<li class="reveal"><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></li>`).join('');
-  $('#diff').innerHTML = c.differentials
-    .map((d, i) => `<article class="card reveal"><span class="card__n">0${i + 1}</span><h3>${esc(d.title)}</h3><p>${esc(d.text)}</p></article>`)
-    .join('');
-  $('#address').innerHTML = `${esc(c.address.line1)}<br>${esc(c.address.line2)}`;
-  $('#hours').innerHTML = c.hours.map((h) => `<li><span>${esc(h.days)}</span><b>${esc(h.time)}</b></li>`).join('');
-
-  const insta = $('#instaLink');
-  insta.href = c.instagram.url;
-  insta.textContent = `@${c.instagram.handle}`;
-
-  const wa = `https://wa.me/${c.whatsapp.number}?text=${encodeURIComponent(c.whatsapp.message)}`;
-  document.querySelectorAll('[data-whatsapp]').forEach((a) => {
-    a.href = wa; a.target = '_blank'; a.rel = 'noopener noreferrer';
-  });
-  $('#year').textContent = new Date().getFullYear();
-}
-
 /* ---------- Reveal ao entrar na tela ---------- */
 function setupReveal() {
   const io = new IntersectionObserver((entries) => {
@@ -53,11 +26,8 @@ function setupNav() {
 
 /* ---------- Boot ---------- */
 async function boot() {
-  const [clinic, manifest] = await Promise.all([
-    fetch('/api/clinic').then((r) => r.json()),
-    fetch('/frames/manifest.json').then((r) => r.json()),
-  ]);
-  renderClinic(clinic);
+  // os textos já vêm prontos do servidor (banco de dados)
+  const manifest = await fetch('/frames/manifest.json').then((r) => r.json());
   setupReveal();
   setupNav();
 
@@ -89,10 +59,7 @@ async function boot() {
     countEl: $('#hudNow'),
     hintEl: $('#hint'),
     ease: reduceMotion ? 1 : 0.12,
-    pauses: [
-  { at: 110 / 389, hold: 0.2 },   // 02 Acolhimento
-  { at: 245 / 389, hold: 0.2 },   // 03 Ambiente
-],
+    pauses: JSON.parse($('#scrub').dataset.pauses || '[]'), // vem do servidor (server/scenes.js)
   });
   scrub.init();
 

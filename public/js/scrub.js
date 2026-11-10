@@ -9,6 +9,37 @@
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const smooth = (t) => t * t * (3 - 2 * t);
 
+/**
+ * Enquadramento em telas verticais (celular): o vídeo é horizontal, então só cabe uma faixa dele.
+ * Aqui dizemos onde está o assunto em cada ponto do vídeo: [nº do quadro, posição horizontal 0..1].
+ * 0 = borda esquerda, 0.5 = centro, 1 = borda direita. Entre um ponto e outro a câmera desliza suave.
+ * Em telas horizontais (computador) isso não muda nada. Se trocar o vídeo, ajuste estes números.
+ */
+const FOCUS_LAST = 389; // último quadro (nº de quadros - 1) do vídeo atual
+const FOCUS = [
+  [0, 0.5],    // porta fechada
+  [60, 0.5],   // porta abrindo, neon ao fundo
+  [110, 0.45], // parede verde com o neon (pausa 1)
+  [140, 0.43], // aproximando do neon
+  [170, 0.58], // corredor: TV, parede verde e sala de atendimento
+  [200, 0.62],
+  [245, 0.66], // sala de atendimento: dentista e cadeira (pausa 2)
+  [310, 0.66],
+  [370, 0.6],  // mãos da dentista no paciente
+  [389, 0.58],
+].map(([f, x]) => [f / FOCUS_LAST, x]);
+
+function focusAt(p) {
+  if (p <= FOCUS[0][0]) return FOCUS[0][1];
+  for (let i = 1; i < FOCUS.length; i++) {
+    if (p <= FOCUS[i][0]) {
+      const k = (p - FOCUS[i - 1][0]) / ((FOCUS[i][0] - FOCUS[i - 1][0]) || 1);
+      return FOCUS[i - 1][1] + (FOCUS[i][1] - FOCUS[i - 1][1]) * smooth(clamp(k));
+    }
+  }
+  return FOCUS[FOCUS.length - 1][1];
+}
+
 export class Scrub {
   constructor({ section, canvas, sequence, chapters, progressEl, countEl, hintEl, ease = 0.12, pauses = [] }) {
     this.section = section;
@@ -92,7 +123,10 @@ onScroll() {
     // "cover": preenche a tela sem distorcer
     const s = Math.max(cw / iw, ch / ih);
     const dw = iw * s, dh = ih * s;
-    this.ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+    // sobra imagem dos lados (tela vertical)? centraliza no assunto em vez de no meio do quadro
+    const fx = focusAt(local / Math.max(1, this.seq.count - 1));
+    const dx = clamp(cw / 2 - fx * dw, cw - dw, 0);
+    this.ctx.drawImage(img, dx, (ch - dh) / 2, dw, dh);
   }
 
   videoProgress(p) {

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Painel — Prospere Odonto</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+  <meta property="og:image" content="https://bolt.new/static/og_default.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+</head>
+<body>
+
+  <!-- ===== LOGIN ===== -->
+  <main class="login" id="viewLogin" hidden>
+    <form class="login__card" id="loginForm" autocomplete="on">
+      <span class="login__logo" data-icon="tooth"></span>
+      <div class="brand">Prospere <em>Odonto</em></div>
+      <p class="muted">Painel de administração</p>
+
+      <label class="field">
+        <span class="field__label">Usuário</span>
+        <input type="text" name="user" id="loginUser" autocomplete="username" required autofocus>
+      </label>
+      <label class="field">
+        <span class="field__label">Senha</span>
+        <input type="password" name="password" id="loginPass" autocomplete="current-password" required>
+      </label>
+
+      <p class="msg msg--error" id="loginError" role="alert" hidden></p>
+      <button class="btn btn--block" type="submit" id="loginBtn">Entrar</button>
+    </form>
+  </main>
+
+  <!-- ===== PAINEL ===== -->
+  <div class="app" id="viewApp" hidden>
+    <aside class="side" aria-label="Menu do painel">
+      <div class="side__brand">
+        <span class="side__logo" data-icon="tooth"></span>
+        <span class="side__name">
+          <strong>Prospere Odonto</strong>
+          <small>Painel administrativo</small>
+        </span>
+      </div>
+      <nav class="side__nav" id="side" aria-label="Seções do painel"></nav>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <div class="content">
+      <header class="top">
+        <div class="top__start">
+          <button class="icon-btn" type="button" id="menuBtn" aria-label="Recolher ou expandir o menu">
+            <span data-icon="menu"></span>
+          </button>
+          <div class="top__title">
+            <h1 id="pageTitle"></h1>
+            <p class="muted" id="pageDesc"></p>
+          </div>
+        </div>
+        <div class="top__actions">
+          <span class="dirty" id="dirty" hidden>Alterações não salvas</span>
+          <a class="btn btn--ghost btn--sm" href="/" target="_blank" rel="noopener">
+            <span data-icon="eye"></span><span class="hide-sm">Visualizar site</span>
+          </a>
+          <div class="profile">
+            <button class="profile__btn" type="button" id="profileBtn" aria-haspopup="true" aria-expanded="false">
+              <span class="avatar" aria-hidden="true">A</span>
+              <span class="profile__name">Administrador</span>
+              <span class="profile__chev" data-icon="chevron"></span>
+            </button>
+            <div class="profile__menu" id="profileMenu" hidden>
+              <button class="profile__item" type="button" id="logoutBtn">
+                <span data-icon="logout"></span>Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="main">
+        <div id="notice" role="status" aria-live="polite"></div>
+        <div id="panel"></div>
+      </main>
+    </div>
+
+    <div class="savebar" id="savebar" hidden>
+      <label class="savebar__note">
+        <span class="field__label">Anotação desta versão (opcional)</span>
+        <input type="text" id="note" maxlength="200" placeholder="Ex.: troquei o telefone" autocomplete="off">
+      </label>
+      <div class="savebar__btns">
+        <button class="btn btn--ghost" type="button" id="discardBtn">Descartar</button>
+        <button class="btn" type="button" id="saveBtn">Salvar alterações</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/admin/admin.js"></script>
+</body>
+</html>

@@ -9,6 +9,11 @@
   const out = { teeth: q('#labTeeth'), prec: q('#labPrec'), shade: q('#labShade'), bar: q('#labBar'), now: q('#labNow') };
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // textos editáveis no painel (vêm do servidor via data-attributes)
+  const PREC = root.dataset.precision || '±0,02 mm';
+  let STAT = ['Escaneando', 'Atenção 26 · 36', 'Simulando', 'Sorriso ideal'];
+  try { const s = JSON.parse(root.dataset.statuses || ''); if (Array.isArray(s) && s.length === 4) STAT = s; } catch { /* usa o padrão */ }
+
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const sm = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -212,8 +217,8 @@
     // UI
     const n = Math.round(clamp(scannedSum, 0, 32));
     out.teeth.textContent = String(n).padStart(2, '0') + '/32';
-    out.prec.textContent = n ? '±0,02 mm' : '—';
-    out.shade.textContent = p < .4 ? 'Escaneando' : p < .64 ? 'Atenção 26 · 36' : p < .84 ? 'Simulando' : 'Sorriso ideal';
+    out.prec.textContent = n ? PREC : '—';
+    out.shade.textContent = p < .4 ? STAT[0] : p < .64 ? STAT[1] : p < .84 ? STAT[2] : STAT[3];
     out.bar.style.transform = `scaleX(${p})`;
     const idx = p < .3 ? 0 : p < .6 ? 1 : p < .85 ? 2 : 3;
     steps.forEach((s, k) => s.classList.toggle('is-on', k === idx));

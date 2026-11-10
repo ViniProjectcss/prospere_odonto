@@ -1,0 +1,137 @@
+/* ===== Cartão de contato: CTA fixo + gaveta lateral ===== */
+.lc { position: fixed; inset: auto 0 0 0; height: 0; z-index: 45; pointer-events: none; font-family: var(--sans); }
+.lc.is-open { z-index: 90; } /* acima do cabeçalho enquanto a gaveta está aberta */
+body.is-loading .lc { display: none; }
+
+/* CTA fixo no canto inferior direito */
+.lc__dock {
+  position: absolute; right: max(20px, env(safe-area-inset-right, 0px)); left: auto;
+  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: center; gap: 4px; pointer-events: auto;
+  opacity: 0; visibility: hidden; transform: translateY(12px);
+  transition: opacity .45s ease, transform .45s ease, visibility .45s;
+}
+.lc.is-visible .lc__dock { opacity: 1; visibility: visible; transform: none; }
+.lc.is-open .lc__dock { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.lc__pill {
+  display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px 14px 18px; border-radius: 999px; cursor: pointer;
+  border: 0; background: var(--gold); color: #0b1a13; font: 600 14px/1 var(--sans); letter-spacing: .02em;
+  box-shadow: 0 16px 36px -14px rgba(0, 0, 0, .7), inset 0 0 0 1px rgba(255, 255, 255, .25);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.lc__pill:hover { transform: translateY(-2px); box-shadow: 0 20px 40px -14px rgba(0, 0, 0, .75), inset 0 0 0 1px rgba(255, 255, 255, .35); }
+.lc__ic { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+/* anel discreto que "respira" de vez em quando para chamar o olhar (para quando passa o mouse) */
+.lc__pill { position: relative; }
+.lc__pill::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; border: 2px solid var(--gold);
+  opacity: 0; pointer-events: none; animation: lcRing 5.5s ease-out 2.5s infinite;
+}
+.lc__pill:hover::after { animation: none; }
+@keyframes lcRing { 0% { opacity: .75; transform: scale(1); } 28%, 100% { opacity: 0; transform: scale(1.16, 1.5); } }
+
+/* dica que aparece ao passar o mouse (e uma vez sozinha por sessão) */
+.lc__tip {
+  position: absolute; right: 0; bottom: calc(100% + 14px); width: min(300px, calc(100vw - 40px)); padding: 16px 18px 15px;
+  border-radius: 18px; color: var(--paper); pointer-events: none;
+  background: rgba(11, 26, 19, .88); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, .16); box-shadow: 0 24px 50px -24px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 255, 255, .12);
+  opacity: 0; transform: translateY(8px); transition: opacity .3s ease, transform .3s ease;
+}
+.lc__tip b { display: block; margin: 0 0 6px; font: 300 21px/1.15 var(--serif); letter-spacing: -.01em; }
+.lc__tip p { margin: 0; font-size: 13.5px; line-height: 1.5; color: #d6dfd9; }
+.lc__tip ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 12px 0 0; padding: 0; font-size: 12px; letter-spacing: .02em; color: var(--gold); }
+.lc__tip li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 7px; border-radius: 50%; background: var(--gold); vertical-align: 1px; }
+.lc__tip.is-peek, .lc__pill:focus-visible + .lc__tip { opacity: 1; transform: none; }
+@media (hover: hover) and (pointer: fine) { .lc__pill:hover + .lc__tip { opacity: 1; transform: none; } }
+.lc__x { display: none; } /* um CTA fixo não deve ser dispensável */
+.lc__pill:focus-visible, .lc__close:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* fundo escurecido atrás da gaveta */
+.lc__backdrop {
+  position: fixed; inset: 0; pointer-events: auto; background: rgba(5, 12, 9, .55);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  opacity: 0; transition: opacity .3s ease;
+}
+.lc__backdrop[hidden] { display: none; }
+.lc__backdrop.is-on { opacity: 1; }
+
+/* gaveta lateral */
+.lc__panel {
+  position: fixed; top: 0; right: 0; bottom: 0; left: auto;
+  width: min(460px, 100vw); height: 100vh; height: 100dvh; max-height: none; overflow: auto;
+  padding: clamp(28px, 7vh, 64px) clamp(24px, 3vw, 40px) 28px; color: var(--paper); pointer-events: auto;
+  display: flex; flex-direction: column;
+  border-left: 1px solid rgba(255, 255, 255, .14); border-radius: 28px 0 0 28px;
+  background: linear-gradient(160deg, #0f1f17, #0b1a13);
+  box-shadow: -30px 0 60px -30px rgba(0, 0, 0, .7);
+  opacity: 1; transform: translateX(100%); transition: transform .38s cubic-bezier(.2, .8, .2, 1);
+  overscroll-behavior: contain;
+}
+/* centraliza na vertical quando sobra espaço, sem cortar o topo quando falta */
+.lc__panel::before, .lc__panel::after { content: ''; flex: 1 0 0; }
+.lc__panel[hidden] { display: none; }
+.lc__panel.is-open { transform: none; }
+
+.lc__close {
+  position: absolute; top: 18px; right: 18px; width: 34px; height: 34px; display: grid; place-items: center; padding: 0; cursor: pointer;
+  border-radius: 50%; border: 1px solid rgba(255, 255, 255, .18); background: transparent; color: var(--paper); font: 18px/1 var(--sans);
+}
+.lc__close:hover { border-color: var(--gold); color: var(--gold); }
+.lc__title { margin: 0 40px 8px 0; font: 300 clamp(30px, 3.4vw, 38px)/1.12 var(--serif); letter-spacing: -.01em; }
+.lc__lead { margin: 0 0 22px; color: #d6dfd9; font-size: 15px; line-height: 1.55; }
+
+/* os itens do formulário sobem em sequência quando a gaveta abre */
+@keyframes lcRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.lc__panel.is-open :is(.lc__title, .lc__lead, .lc__field, .lc__consent, .lc__captcha, .lc__submit) {
+  animation: lcRise .55s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--i, 0) * 55ms + 140ms);
+}
+
+/* campos */
+.lc__field { margin: 0 0 16px; }
+.lc__field label { display: block; margin: 0 0 6px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted-d); }
+.lc__field input {
+  width: 100%; padding: 13px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .2); background: rgba(255, 255, 255, .05);
+  color: var(--paper); font: 400 15px/1.2 var(--sans);
+}
+.lc__field input::placeholder { color: rgba(255, 255, 255, .35); }
+.lc__field input:focus-visible, .lc__consent input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.lc__field input[aria-invalid="true"] { border-color: #ff9b8a; }
+.lc__consent { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0 4px; font-size: 13px; line-height: 1.45; color: #d6dfd9; }
+.lc__consent input { flex: none; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--gold); }
+.lc__consent input[aria-invalid="true"] { outline: 2px solid #ff9b8a; outline-offset: 1px; }
+.lc__consent a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+.lc__captcha { margin: 12px 0 4px; }
+.lc__err { margin: 6px 0 0; color: #ffb4a6; font-size: 13px; line-height: 1.4; }
+.lc__submit { width: 100%; margin-top: 16px; justify-content: center; text-align: center; }
+.lc__submit:disabled { opacity: .6; cursor: wait; transform: none; box-shadow: none; }
+.lc__hp { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+.lc__done:focus { outline: none; }
+
+/* celular: CTA em largura total e formulário como folha de baixo */
+@media (max-width: 639px) {
+  .lc__dock { left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .lc__pill { width: 100%; justify-content: center; padding: 16px; }
+  .lc__tip { display: none; }
+  .lc__panel {
+    top: auto; left: 0; right: 0; width: auto; height: auto; max-height: 92vh; max-height: 92dvh;
+    padding: 28px 20px calc(24px + env(safe-area-inset-bottom, 0px)); border-radius: 24px 24px 0 0;
+    border-left: 0; border-top: 1px solid rgba(255, 255, 255, .14); box-shadow: 0 -30px 60px -30px rgba(0, 0, 0, .7);
+    transform: translateY(100%);
+  }
+  .lc__panel::before, .lc__panel::after { display: none; }
+  .lc__panel.is-open { transform: none; }
+  .lc__field input { font-size: 16px; } /* evita o zoom automático do iPhone */
+}
+@media (prefers-reduced-motion: reduce) {
+  .lc__pill::after { animation: none; }
+  .lc__panel.is-open :is(.lc__title, .lc__lead, .lc__field, .lc__consent, .lc__captcha, .lc__submit) { animation: none; }
+  .lc__tip { transition: none; }
+  .lc__panel, .lc__dock, .lc__backdrop, .lc__pill { transition: none; }
+}
+
+/* rodapé: link da Política de Privacidade */
+.footer__links { display: flex; gap: 22px; flex-wrap: wrap; }
+.footer__links a { color: inherit; }
+.footer__links a:hover { color: var(--gold); }
